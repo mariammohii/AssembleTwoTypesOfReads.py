@@ -1,0 +1,69 @@
+#---------Function To Read File---------
+def readFiles (fileName):
+    file = open(fileName).readlines()
+    fline = int(file[0])
+    content_list = [line.rstrip() for line in file[1:]]
+    return fline, content_list
+
+#---------Function To Get Kmers
+def getKmers(Contnt):
+    dict={}
+    for i in (Contnt):
+        prefix = i[:14]
+        suffix= i[1:]
+        dict.setdefault(prefix, suffix)
+    return dict
+
+#---------Function To Get Start---------
+def findstartPath(pairedDict):
+    for key in pairedDict.items():
+        found=False
+        for value in pairedDict.items():
+            if(value[1]==key[0]):
+                found=True
+                break
+        if not found:
+            start=key[0]
+            break
+    return start
+
+#---------Function To Get End---------
+def findendPath(pairedDict):
+    for value in pairedDict.items():
+        found=False
+        for key in pairedDict.items():
+            if(key[0]==value[1]):
+                found=True
+                break
+        if not found:
+            end=value[1]
+            break
+    return end
+
+#---------Function To Get Concatenate Single Reads---------
+def concatenateSingle(singleDict, start, end):
+    path = start
+    while(True):
+        if(start != end):
+            suff=singleDict.get(start)
+            path += suff[-1]
+            start = singleDict.get(start)
+        else:
+            break
+    return path
+
+#---------Function To Return Single Read Output---------
+def single_read():
+    var = "C:\\Users\\Mariam\\Downloads\\Genomics Project\\SingleReadInput.txt"
+    dict={}
+    firstLine, contentList = readFiles(var)
+    dict=getKmers(contentList)
+    print(dict)
+    start=findstartPath(dict)
+    end=findendPath(dict)
+    sequence=concatenateSingle(dict,start,end)
+    return sequence
+
+
+#---------Main---------
+print(single_read())
